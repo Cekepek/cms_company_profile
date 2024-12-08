@@ -274,7 +274,7 @@ class _PortfolioState extends State<Portfolio> {
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: Text(
-                                  "Tambah Project",
+                                  "Tambah Proyek",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w500,
