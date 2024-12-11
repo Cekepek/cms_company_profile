@@ -1,3 +1,4 @@
+import 'package:cms_company_profile/editProyek.dart';
 import 'package:cms_company_profile/helper.dart';
 import 'package:cms_company_profile/login.dart';
 import 'package:cms_company_profile/portfolio.dart';
@@ -16,7 +17,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       initialRoute: '/',
-      routes: {'/portfolio': (context) => Portfolio()},
+      routes: {
+        '/portfolio': (context) => Portfolio(),
+        '/edit_proyek': (context) => EditProyek()
+      },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Helper().primaryColor),
         useMaterial3: true,

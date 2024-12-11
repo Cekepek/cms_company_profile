@@ -2,6 +2,7 @@ import 'package:cms_company_profile/class/project.dart';
 import 'package:cms_company_profile/helper.dart';
 import 'package:cms_company_profile/sidebar.dart';
 import 'package:flutter/material.dart';
+import 'global.dart' as global;
 
 class Portfolio extends StatefulWidget {
   const Portfolio({super.key});
@@ -14,11 +15,6 @@ class Portfolio extends StatefulWidget {
 }
 
 class _PortfolioState extends State<Portfolio> {
-  List<Project> listProject = [
-    Project(id: 1, namaProject: "Test 1", lokasi: "Test 1 Lokasi"),
-    Project(id: 2, namaProject: "Test 2", lokasi: "Test 2 Lokasi")
-  ];
-
   Future<void> showTambahProject() async {
     var nameController = TextEditingController();
     var lokasiController = TextEditingController();
@@ -182,8 +178,8 @@ class _PortfolioState extends State<Portfolio> {
                           child: InkWell(
                             onTap: () {
                               setState(() {
-                                listProject.add(Project(
-                                    id: listProject.length + 1,
+                                global.listProject.add(Project(
+                                    id: global.listProject.length + 1,
                                     namaProject: nameController.text,
                                     lokasi: lokasiController.text));
 
@@ -316,17 +312,23 @@ class _PortfolioState extends State<Portfolio> {
                             DataColumn(label: Text("Aksi"))
                           ],
                           rows: List.generate(
-                            listProject.length,
+                            global.listProject.length,
                             (index) => DataRow(cells: <DataCell>[
-                              DataCell(Text(listProject[index].id.toString())),
                               DataCell(Text(
-                                  listProject[index].namaProject.toString())),
-                              DataCell(
-                                  Text(listProject[index].lokasi.toString())),
+                                  global.listProject[index].id.toString())),
+                              DataCell(Text(global
+                                  .listProject[index].namaProject
+                                  .toString())),
+                              DataCell(Text(
+                                  global.listProject[index].lokasi.toString())),
                               DataCell(Row(
                                 children: [
                                   InkWell(
-                                    onTap: () {},
+                                    onTap: () {
+                                      global.proyekTerpilih = index;
+                                      Navigator.pushNamed(
+                                          context, "/edit_proyek");
+                                    },
                                     child: const Icon(
                                       Icons.edit,
                                       size: 30,
@@ -335,10 +337,17 @@ class _PortfolioState extends State<Portfolio> {
                                   ),
                                   const Padding(
                                       padding: EdgeInsets.only(right: 8)),
-                                  const Icon(
-                                    Icons.delete_rounded,
-                                    size: 30,
-                                    color: Colors.red,
+                                  InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        global.listProject.removeAt(index);
+                                      });
+                                    },
+                                    child: const Icon(
+                                      Icons.delete_rounded,
+                                      size: 30,
+                                      color: Colors.red,
+                                    ),
                                   ),
                                 ],
                               )),

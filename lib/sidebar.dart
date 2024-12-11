@@ -40,6 +40,7 @@ class _SidebarState extends State<Sidebar> {
               onTap: () {
                 setState(() {
                   global.selectedPage = "portfolio";
+                  Navigator.pushNamed(context, "/portfolio");
                 });
               },
               child: Padding(
