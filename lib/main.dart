@@ -1,3 +1,4 @@
+import 'package:cms_company_profile/contact.dart';
 import 'package:cms_company_profile/editProyek.dart';
 import 'package:cms_company_profile/helper.dart';
 import 'package:cms_company_profile/login.dart';
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/portfolio': (context) => Portfolio(),
-        '/edit_proyek': (context) => EditProyek()
+        '/edit_proyek': (context) => EditProyek(),
+        '/contact': (context) => Contact()
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Helper().primaryColor),

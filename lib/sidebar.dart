@@ -75,6 +75,7 @@ class _SidebarState extends State<Sidebar> {
               onTap: () {
                 setState(() {
                   global.selectedPage = "contact";
+                  Navigator.pushNamed(context, "/contact");
                 });
               },
               child: Padding(
