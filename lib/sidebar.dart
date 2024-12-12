@@ -13,7 +13,9 @@ class _SidebarState extends State<Sidebar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Helper().primaryColor,
+      decoration: BoxDecoration(
+          color: Helper().primaryColor,
+          borderRadius: BorderRadius.horizontal(right: Radius.circular(10))),
       width: double.infinity,
       height: MediaQuery.of(context).size.height,
       child: Column(children: [

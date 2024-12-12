@@ -1,5 +1,6 @@
 import 'package:cms_company_profile/helper.dart';
 import 'package:cms_company_profile/sidebar.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'global.dart' as global;
 
@@ -22,6 +23,26 @@ class _EditProyekState extends State<EditProyek> {
     super.initState();
     nameController.text = global.listProject[global.proyekTerpilih].namaProject;
     lokasiController.text = global.listProject[global.proyekTerpilih].lokasi;
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.image, // Only allow image files
+        withData: true, // Get the file's byte data
+      );
+
+      if (result != null) {
+        setState(() {
+          //  _imageBytes = result.files.first.bytes;
+          print("KE SAVE " + result.files.first.name);
+        });
+      } else {
+        // User canceled the picker
+      }
+    } catch (e) {
+      print("ERROR PICKING FILE : $e");
+    }
   }
 
   @override
@@ -161,13 +182,78 @@ class _EditProyekState extends State<EditProyek> {
                     height: 16,
                   ),
                   Container(
+                    width: MediaQuery.of(context).size.width,
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border:
                           Border.all(color: Helper().primaryColor, width: 1),
                     ),
-                    child: Text("GAMBAR PROYEK"),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Gambar Portfolio",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 24),
+                        ),
+                        GridView.builder(
+                          itemCount: global.listGambar.length + 1,
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: 1.5,
+                            crossAxisCount: 4,
+                            crossAxisSpacing: 10,
+                          ),
+                          clipBehavior: Clip.none,
+                          itemBuilder: (context, index) {
+                            if (index < global.listGambar.length) {
+                              return SizedBox(
+                                width: double.infinity / 4,
+                                height: MediaQuery.of(context).size.height / 6,
+                                child:
+                                    Image.asset(global.listGambar[index].path),
+                              );
+                            } else {
+                              return Material(
+                                elevation: 4.0, // Optional shadow
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      8.0), // Optional rounded corners
+                                  side: BorderSide(
+                                    color:
+                                        Helper().primaryColor, // Border color
+                                    width: 2.0, // Border width
+                                  ),
+                                ),
+                                child: InkWell(
+                                  onTap: () {
+                                    _pickImage();
+                                  },
+                                  child: SizedBox(
+                                    width: double.infinity / 4,
+                                    height:
+                                        MediaQuery.of(context).size.height / 6,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.upload),
+                                        Text("Upload Gambar")
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

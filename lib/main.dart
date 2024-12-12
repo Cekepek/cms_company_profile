@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Biiio Studio Admin',
       initialRoute: '/',
       routes: {
         '/portfolio': (context) => Portfolio(),
