@@ -3,17 +3,17 @@ import 'package:cms_company_profile/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'global.dart' as global;
 
-class Contact extends StatefulWidget {
-  const Contact({super.key});
+class ContactUs extends StatefulWidget {
+  const ContactUs({super.key});
 
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return _ContactState();
+    return _ContactUsState();
   }
 }
 
-class _ContactState extends State<Contact> {
+class _ContactUsState extends State<ContactUs> {
   Future<void> bacaPesan(int index) async {
     var nameController = TextEditingController();
     var emailController = TextEditingController();

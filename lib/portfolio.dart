@@ -1,8 +1,12 @@
+import 'dart:convert';
+
+import 'package:cms_company_profile/class/contact.dart';
 import 'package:cms_company_profile/class/project.dart';
 import 'package:cms_company_profile/helper.dart';
 import 'package:cms_company_profile/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'global.dart' as global;
+import 'package:cms_company_profile/model/api.dart' as api;
 
 class Portfolio extends StatefulWidget {
   const Portfolio({super.key});
@@ -15,6 +19,22 @@ class Portfolio extends StatefulWidget {
 }
 
 class _PortfolioState extends State<Portfolio> {
+  void tambahProyek(String namaProyek, String lokasi) async {
+    final body =
+        jsonEncode({"id_proyek": 0, "nama": namaProyek, "lokasi": lokasi});
+    // final response = await http.post(
+    //     Uri.parse("http://sw.crossnet.co.id:5868/lectio_divina"),
+    //     body: body);
+    final response = await api.connectApi("/proyek", "post", body);
+    if (response.status == 200) {
+      print("KEUPLOAD ");
+
+      print(response.data['id_proyek']);
+    } else {
+      throw Exception('Failed to read API');
+    }
+  }
+
   Future<void> showTambahProject() async {
     var nameController = TextEditingController();
     var lokasiController = TextEditingController();
@@ -178,6 +198,8 @@ class _PortfolioState extends State<Portfolio> {
                           child: InkWell(
                             onTap: () {
                               setState(() {
+                                tambahProyek(
+                                    nameController.text, lokasiController.text);
                                 global.listProject.add(Project(
                                     id: global.listProject.length + 1,
                                     namaProject: nameController.text,
