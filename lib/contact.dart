@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:cms_company_profile/class/contact.dart';
 import 'package:cms_company_profile/helper.dart';
 import 'package:cms_company_profile/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'global.dart' as global;
+import 'package:cms_company_profile/model/api.dart' as api;
 
 class ContactUs extends StatefulWidget {
   const ContactUs({super.key});
@@ -14,6 +18,28 @@ class ContactUs extends StatefulWidget {
 }
 
 class _ContactUsState extends State<ContactUs> {
+  void getData() async {
+    final response2 = await api.connectApi("/contactUs", "get", null);
+    if (response2.status == 200) {
+      if (response2.message == 'berhasil') {
+        setState(() {
+          final List<Contact> contactList =
+              Contact.decode(jsonEncode(response2.data));
+          global.listContact = contactList;
+        });
+      } else {}
+    } else {
+      throw Exception('Failed to read API');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    getData();
+  }
+
   Future<void> bacaPesan(int index) async {
     var nameController = TextEditingController();
     var emailController = TextEditingController();
@@ -313,7 +339,6 @@ class _ContactUsState extends State<ContactUs> {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    global.proyekTerpilih = index;
                                     bacaPesan(index);
                                   },
                                   child: const Icon(

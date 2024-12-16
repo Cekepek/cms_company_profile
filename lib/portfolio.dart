@@ -19,12 +19,31 @@ class Portfolio extends StatefulWidget {
 }
 
 class _PortfolioState extends State<Portfolio> {
+  void getData() async {
+    final response = await api.connectApi("/proyek", "get", null);
+    if (response.status == 200) {
+      if (response.message == 'berhasil') {
+        setState(() {
+          final List<Project> projectList =
+              Project.decode(jsonEncode(response.data));
+          global.listProject = projectList;
+        });
+      } else {}
+    } else {
+      throw Exception('Failed to read API');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    getData();
+  }
+
   void tambahProyek(String namaProyek, String lokasi) async {
     final body =
         jsonEncode({"id_proyek": 0, "nama": namaProyek, "lokasi": lokasi});
-    // final response = await http.post(
-    //     Uri.parse("http://sw.crossnet.co.id:5868/lectio_divina"),
-    //     body: body);
     final response = await api.connectApi("/proyek", "post", body);
     if (response.status == 200) {
       print("KEUPLOAD ");
@@ -347,7 +366,8 @@ class _PortfolioState extends State<Portfolio> {
                                 children: [
                                   InkWell(
                                     onTap: () {
-                                      global.proyekTerpilih = index;
+                                      global.proyekTerpilih =
+                                          global.listProject[index];
                                       Navigator.pushNamed(
                                           context, "/edit_proyek");
                                     },

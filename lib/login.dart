@@ -23,39 +23,6 @@ class _LoginState extends State<Login> {
   TextEditingController _user_id = TextEditingController();
   TextEditingController _user_password = TextEditingController();
   String error_login = "";
-  void getData() async {
-    final response = await api.connectApi("/proyek", "get", null);
-    if (response.status == 200) {
-      if (response.message == 'berhasil') {
-        setState(() {
-          final List<Project> projectList =
-              Project.decode(jsonEncode(response.data));
-          global.listProject = projectList;
-        });
-      } else {}
-    } else {
-      throw Exception('Failed to read API');
-    }
-    final response2 = await api.connectApi("/contactUs", "get", null);
-    if (response2.status == 200) {
-      if (response2.message == 'berhasil') {
-        setState(() {
-          final List<Contact> contactList =
-              Contact.decode(jsonEncode(response2.data));
-          global.listContact = contactList;
-        });
-      } else {}
-    } else {
-      throw Exception('Failed to read API');
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    getData();
-  }
 
   void login() async {
     try {
