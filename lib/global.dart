@@ -5,7 +5,8 @@ import 'package:cms_company_profile/class/project.dart';
 import 'package:cms_company_profile/class/contact.dart';
 
 String selectedPage = "portfolio";
-Project proyekTerpilih = Project(id: 0, namaProject: "", lokasi: "");
+Project proyekTerpilih =
+    Project(id: 0, namaProject: "", lokasi: "", kategori: "");
 bool loggedIn = false;
 
 List<Project> listProject = [];

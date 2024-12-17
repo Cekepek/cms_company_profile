@@ -9,6 +9,7 @@ import 'global.dart' as global;
 import 'package:cms_company_profile/model/api.dart' as api;
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
+import 'dart:typed_data';
 
 class EditProyek extends StatefulWidget {
   const EditProyek({super.key});
@@ -23,23 +24,28 @@ class EditProyek extends StatefulWidget {
 class _EditProyekState extends State<EditProyek> {
   var nameController = TextEditingController();
   var lokasiController = TextEditingController();
+  var kategoriController = TextEditingController();
+  final List<String> _dropdownItems = ['Interior', 'Architecture'];
+  String kategoriPilihan = "Interior";
 
-  Future<void> uploadImage(File imageFile, String url) async {
+  Future<void> uploadImage(Uint8List imageFile, String filename) async {
     try {
+      String url = "http://biiio-studio.com:5868/portfolio";
       // Membuat request multipart
       var request = http.MultipartRequest('POST', Uri.parse(url));
 
       // Tambahkan file ke dalam request
-      var image = await http.MultipartFile.fromPath(
-        'file', // Nama field di API
-        imageFile.path,
-        filename: path.basename(imageFile.path), // Nama file
+      var image = await http.MultipartFile.fromBytes(
+        'photo', // Nama field di API
+        imageFile,
+        filename: filename, // Nama file
       );
 
       request.files.add(image);
 
-      // Tambahkan parameter lain jika diperlukan
-      request.fields['key'] = 'value'; // Tambahan parameter, jika ada
+      request.fields['id'] = "0";
+      request.fields['id_proyek'] = global.proyekTerpilih.id.toString();
+      request.fields['path'] = filename;
 
       // Kirim request
       var response = await request.send();
@@ -60,6 +66,10 @@ class _EditProyekState extends State<EditProyek> {
     super.initState();
     nameController.text = global.proyekTerpilih.namaProject;
     lokasiController.text = global.proyekTerpilih.lokasi;
+    kategoriController.text = global.proyekTerpilih.kategori;
+    global.proyekTerpilih.kategori == ""
+        ? kategoriPilihan = 'Interior'
+        : kategoriPilihan = global.proyekTerpilih.kategori;
   }
 
   Future<void> showAlert() async {
@@ -162,7 +172,8 @@ class _EditProyekState extends State<EditProyek> {
     final body = jsonEncode({
       "id_proyek": global.proyekTerpilih.id,
       "nama": nameController.text,
-      "lokasi": lokasiController.text
+      "lokasi": lokasiController.text,
+      "kategori": kategoriPilihan,
     });
     print(body);
     final response = await api.connectApi("/proyek", "put", body);
@@ -185,8 +196,8 @@ class _EditProyekState extends State<EditProyek> {
 
       if (result != null) {
         setState(() {
-          File file = File(result.files.single.path!);
-          uploadImage(file, "http://biiio-studio.com:5868");
+          Uint8List fileBytes = result.files.single.bytes!;
+          uploadImage(fileBytes, result.files.single.name);
           //  _imageBytes = result.files.first.bytes;
           print("KE SAVE " + result.files.first.name);
         });
@@ -328,6 +339,43 @@ class _EditProyekState extends State<EditProyek> {
                               hintText: '',
                               border: InputBorder.none,
                             ),
+                          ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          const Text(
+                            "Kategori",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const Padding(padding: EdgeInsets.only(bottom: 8)),
+                          DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                  width: 1, color: Color(0xFFD9D9D9)),
+                            )),
+                            isExpanded: true,
+                            value:
+                                kategoriPilihan, // Nilai yang dipilih saat ini
+                            hint: Text(
+                                'Pilih Opsi'), // Placeholder jika belum ada yang dipilih
+                            onChanged: (newValue) {
+                              setState(() {
+                                kategoriPilihan = newValue!;
+                                print(kategoriPilihan);
+                              });
+                            },
+                            items: _dropdownItems.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),

@@ -19,6 +19,8 @@ class Portfolio extends StatefulWidget {
 }
 
 class _PortfolioState extends State<Portfolio> {
+  final List<String> _dropdownItems = ['Interior', 'Architecture'];
+  String kategoriPilihan = 'Interior';
   void getData() async {
     final response = await api.connectApi("/proyek", "get", null);
     if (response.status == 200) {
@@ -205,6 +207,40 @@ class _PortfolioState extends State<Portfolio> {
                               border: InputBorder.none,
                             ),
                           ),
+                          const Padding(padding: EdgeInsets.only(bottom: 16)),
+                          const Text(
+                            "Kategori",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const Padding(padding: EdgeInsets.only(bottom: 8)),
+                          DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                  width: 1, color: Color(0xFFD9D9D9)),
+                            )),
+                            isExpanded: true,
+                            value:
+                                kategoriPilihan, // Nilai yang dipilih saat ini
+                            hint: Text(
+                                'Pilih Opsi'), // Placeholder jika belum ada yang dipilih
+                            onChanged: (newValue) {
+                              setState(() {
+                                kategoriPilihan = newValue!;
+                              });
+                            },
+                            items: _dropdownItems.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
                         ],
                       ),
                     ),
@@ -222,7 +258,8 @@ class _PortfolioState extends State<Portfolio> {
                                 global.listProject.add(Project(
                                     id: global.listProject.length + 1,
                                     namaProject: nameController.text,
-                                    lokasi: lokasiController.text));
+                                    lokasi: lokasiController.text,
+                                    kategori: kategoriPilihan));
 
                                 Navigator.pop(context);
                               });
@@ -350,6 +387,7 @@ class _PortfolioState extends State<Portfolio> {
                             DataColumn(label: Text("Nomor")),
                             DataColumn(label: Text("Nama Project")),
                             DataColumn(label: Text("Lokasi")),
+                            DataColumn(label: Text("Kategori")),
                             DataColumn(label: Text("Aksi"))
                           ],
                           rows: List.generate(
@@ -362,6 +400,8 @@ class _PortfolioState extends State<Portfolio> {
                                   .toString())),
                               DataCell(Text(
                                   global.listProject[index].lokasi.toString())),
+                              DataCell(Text(global.listProject[index].kategori
+                                  .toString())),
                               DataCell(Row(
                                 children: [
                                   InkWell(
