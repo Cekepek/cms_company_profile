@@ -11,11 +11,7 @@ bool loggedIn = false;
 
 List<Project> listProject = [];
 
-List<Gambar> listGambar = [
-  Gambar(id: 1, path: "images/1.jpg", id_proyek: 1),
-  Gambar(id: 2, path: "images/2.jpg", id_proyek: 1),
-  Gambar(id: 3, path: "images/COVER.jpg", id_proyek: 1)
-];
+List<Gambar> listGambar = [];
 
 List<Contact> listContact = [
   // Contact(

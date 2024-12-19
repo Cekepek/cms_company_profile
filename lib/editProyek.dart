@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cms_company_profile/class/gambar.dart';
+import 'package:cms_company_profile/class/project.dart';
 import 'package:cms_company_profile/helper.dart';
+import 'package:cms_company_profile/hoverableImage.dart';
 import 'package:cms_company_profile/sidebar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -43,15 +46,23 @@ class _EditProyekState extends State<EditProyek> {
 
       request.files.add(image);
 
-      request.fields['id'] = "0";
+      // request.fields.addAll(jsonEncode(
+      // {"id": 0, "id_proyek": global.proyekTerpilih.id, "path": filename}));
+
+      // request.fields['id'] = "0";
       request.fields['id_proyek'] = global.proyekTerpilih.id.toString();
-      request.fields['path'] = filename;
+      // request.fields['path'] = filename;
 
       // Kirim request
       var response = await request.send();
 
       if (response.statusCode == 200) {
+        var body = await http.Response.fromStream(response);
+        String stringBody = body.body;
+        // Map json = jsonDecode(body);
+        print(stringBody);
         print('Upload berhasil');
+        getData();
       } else {
         print('Upload gagal: ${response.statusCode}');
       }
@@ -64,12 +75,30 @@ class _EditProyekState extends State<EditProyek> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getData();
     nameController.text = global.proyekTerpilih.namaProject;
     lokasiController.text = global.proyekTerpilih.lokasi;
     kategoriController.text = global.proyekTerpilih.kategori;
     global.proyekTerpilih.kategori == ""
         ? kategoriPilihan = 'Interior'
         : kategoriPilihan = global.proyekTerpilih.kategori;
+  }
+
+  void getData() async {
+    String idProyek = global.proyekTerpilih.id.toString();
+    final response = await api.connectApi("/sinkronasi/$idProyek", "get", null);
+    if (response.status == 200) {
+      if (response.message == 'berhasil') {
+        setState(() {
+          print(response.data);
+          final List<Gambar> gambarList =
+              Gambar.decode(jsonEncode(response.data));
+          global.listGambar = gambarList;
+        });
+      } else {}
+    } else {
+      throw Exception('Failed to read API');
+    }
   }
 
   Future<void> showAlert() async {
@@ -436,16 +465,15 @@ class _EditProyekState extends State<EditProyek> {
                             childAspectRatio: 1.5,
                             crossAxisCount: 4,
                             crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
                           ),
                           clipBehavior: Clip.none,
                           itemBuilder: (context, index) {
                             if (index < global.listGambar.length) {
-                              return SizedBox(
-                                width: double.infinity / 4,
-                                height: MediaQuery.of(context).size.height / 6,
-                                child:
-                                    Image.asset(global.listGambar[index].path),
-                              );
+                              return HoverableImage(
+                                  imageUrl:
+                                      "http://biiio-studio.com:5868/getPhoto?path=" +
+                                          global.listGambar[index].path);
                             } else {
                               return Material(
                                 elevation: 4.0, // Optional shadow
