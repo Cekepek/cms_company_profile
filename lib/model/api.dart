@@ -60,6 +60,24 @@ Future<ResponseRequestApi> connectApi(
           data: json['data']);
       return responseRequest;
     }
+  } else if (method == "delete") {
+    print(urlApi + url);
+    final response = await http.delete(Uri.parse(urlApi + url), body: body);
+    if (response.statusCode == 200) {
+      Map json = jsonDecode(response.body);
+      ResponseRequestApi responseRequest = ResponseRequestApi(
+          status: response.statusCode,
+          message: json['message'],
+          data: json['data']);
+      return responseRequest;
+    } else {
+      Map json = jsonDecode(response.body);
+      ResponseRequestApi responseRequest = ResponseRequestApi(
+          status: response.statusCode,
+          message: json['message'],
+          data: json['data']);
+      return responseRequest;
+    }
   } else {
     final response = await http.delete(Uri.parse(urlApi + url), body: body);
     if (response.statusCode == 200) {

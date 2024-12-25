@@ -56,6 +56,18 @@ class _PortfolioState extends State<Portfolio> {
     }
   }
 
+  void deleteProyek() async {
+    int id_proyek = global.proyekTerpilih.id;
+    final response =
+        await api.connectApi("/delete_proyek/$id_proyek", "delete", null);
+    print(response.status);
+    if (response.status == 200) {
+      print(response.data);
+    } else {
+      throw Exception('Failed to read API');
+    }
+  }
+
   Future<void> showTambahProject() async {
     var nameController = TextEditingController();
     var lokasiController = TextEditingController();
@@ -423,6 +435,9 @@ class _PortfolioState extends State<Portfolio> {
                                     onTap: () {
                                       setState(() {
                                         global.listProject.removeAt(index);
+                                        global.proyekTerpilih =
+                                            global.listProject[index];
+                                        deleteProyek();
                                       });
                                     },
                                     child: const Icon(
