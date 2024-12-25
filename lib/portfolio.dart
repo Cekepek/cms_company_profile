@@ -25,10 +25,12 @@ class _PortfolioState extends State<Portfolio> {
     final response = await api.connectApi("/proyek", "get", null);
     if (response.status == 200) {
       if (response.message == 'berhasil') {
+        print(response.data);
         setState(() {
           final List<Project> projectList =
               Project.decode(jsonEncode(response.data));
           global.listProject = projectList;
+          print(global.listProject[0].id);
         });
       } else {}
     } else {
@@ -59,7 +61,7 @@ class _PortfolioState extends State<Portfolio> {
   void deleteProyek() async {
     int id_proyek = global.proyekTerpilih.id;
     final response =
-        await api.connectApi("/delete_proyek/$id_proyek", "delete", null);
+        await api.connectApi("/delete_proyek/$id_proyek", "post", null);
     print(response.status);
     if (response.status == 200) {
       print(response.data);
@@ -437,6 +439,10 @@ class _PortfolioState extends State<Portfolio> {
                                         global.listProject.removeAt(index);
                                         global.proyekTerpilih =
                                             global.listProject[index];
+                                        print(index);
+                                        print(global.listProject[0].id);
+                                        print(global.proyekTerpilih.id
+                                            .toString());
                                         deleteProyek();
                                       });
                                     },
