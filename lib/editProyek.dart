@@ -33,7 +33,7 @@ class _EditProyekState extends State<EditProyek> {
 
   Future<void> uploadImage(Uint8List imageFile, String filename) async {
     try {
-      String url = "http://biiio-studio.com:5868/portfolio";
+      String url = "https://biiio-studio.com:5868/portfolio";
       // Membuat request multipart
       var request = http.MultipartRequest('POST', Uri.parse(url));
 
@@ -472,7 +472,7 @@ class _EditProyekState extends State<EditProyek> {
                             if (index < global.listGambar.length) {
                               return HoverableImage(
                                   imageUrl:
-                                      "http://biiio-studio.com:5868/getPhoto?path=" +
+                                      "https://biiio-studio.com:5868/getPhoto?path=" +
                                           global.listGambar[index].path);
                             } else {
                               return Material(
