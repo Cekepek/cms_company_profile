@@ -30,7 +30,7 @@ class _PortfolioState extends State<Portfolio> {
           final List<Project> projectList =
               Project.decode(jsonEncode(response.data));
           global.listProject = projectList;
-          print(global.listProject[0].id);
+          print("Get Data : " + global.listProject[0].id.toString());
         });
       } else {}
     } else {
@@ -61,10 +61,11 @@ class _PortfolioState extends State<Portfolio> {
   void deleteProyek() async {
     int id_proyek = global.proyekTerpilih.id;
     final response =
-        await api.connectApi("/delete_proyek/$id_proyek", "post", null);
+        await api.connectApi("/delete_proyek/$id_proyek", "delete", null);
     print(response.status);
     if (response.status == 200) {
       print(response.data);
+      getData();
     } else {
       throw Exception('Failed to read API');
     }
@@ -436,13 +437,15 @@ class _PortfolioState extends State<Portfolio> {
                                   InkWell(
                                     onTap: () {
                                       setState(() {
-                                        global.listProject.removeAt(index);
                                         global.proyekTerpilih =
                                             global.listProject[index];
-                                        print(index);
-                                        print(global.listProject[0].id);
-                                        print(global.proyekTerpilih.id
-                                            .toString());
+                                        print("PROYEK : " +
+                                            global.proyekTerpilih.id
+                                                .toString());
+
+                                        print("NAMA PROYEK : " +
+                                            global.proyekTerpilih.namaProject
+                                                .toString());
                                         deleteProyek();
                                       });
                                     },

@@ -199,7 +199,7 @@ class _EditProyekState extends State<EditProyek> {
 
   void simpanEdit() async {
     final body = jsonEncode({
-      "id_proyek": global.proyekTerpilih.id,
+      "id": global.proyekTerpilih.id,
       "nama": nameController.text,
       "lokasi": lokasiController.text,
       "kategori": kategoriPilihan,
@@ -209,7 +209,7 @@ class _EditProyekState extends State<EditProyek> {
     if (response.status == 200) {
       print("KEUPLOAD ");
 
-      print(response.data['id_proyek']);
+      print(response.data['id']);
       showAlert();
     } else {
       throw Exception('Failed to read API');

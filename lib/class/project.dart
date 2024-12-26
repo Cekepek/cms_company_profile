@@ -14,14 +14,14 @@ class Project {
 
   factory Project.fromJson(Map<String, dynamic> jsonData) {
     return Project(
-        id: jsonData['id_proyek'],
+        id: jsonData['id'],
         namaProject: jsonData['nama'],
         lokasi: jsonData['lokasi'],
         kategori: jsonData['kategori']);
   }
 
   static Map<String, dynamic> toMap(Project c) => {
-        'id_proyek': c.id,
+        'id': c.id,
         'nama': c.namaProject,
         'lokasi': c.lokasi,
         'kategori': c.kategori,
