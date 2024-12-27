@@ -46,8 +46,12 @@ class _PortfolioState extends State<Portfolio> {
   }
 
   void tambahProyek(String namaProyek, String lokasi) async {
-    final body =
-        jsonEncode({"id_proyek": 0, "nama": namaProyek, "lokasi": lokasi});
+    final body = jsonEncode({
+      "id_proyek": 0,
+      "nama": namaProyek,
+      "lokasi": lokasi,
+      "kategori": kategoriPilihan
+    });
     final response = await api.connectApi("/proyek", "post", body);
     if (response.status == 200) {
       print("KEUPLOAD ");

@@ -75,6 +75,7 @@ class _EditProyekState extends State<EditProyek> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    global.listGambar = [];
     getData();
     nameController.text = global.proyekTerpilih.namaProject;
     lokasiController.text = global.proyekTerpilih.lokasi;
@@ -197,6 +198,10 @@ class _EditProyekState extends State<EditProyek> {
     );
   }
 
+  void refreshGrid() {
+    getData();
+  }
+
   void simpanEdit() async {
     final body = jsonEncode({
       "id": global.proyekTerpilih.id,
@@ -221,14 +226,20 @@ class _EditProyekState extends State<EditProyek> {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.image, // Only allow image files
         withData: true, // Get the file's byte data
+        allowMultiple: true,
       );
 
       if (result != null) {
         setState(() {
-          Uint8List fileBytes = result.files.single.bytes!;
-          uploadImage(fileBytes, result.files.single.name);
-          //  _imageBytes = result.files.first.bytes;
-          print("KE SAVE " + result.files.first.name);
+          for (var file in result.files) {
+            Uint8List fileBytes = file.bytes!;
+            uploadImage(fileBytes, file.name);
+            print("File disimpan: ${file.name}");
+          }
+          // Uint8List fileBytes = result.files.single.bytes!;
+          // uploadImage(fileBytes, result.files.single.name);
+          // //  _imageBytes = result.files.first.bytes;
+          // print("KE SAVE " + result.files.first.name);
         });
       } else {
         // User canceled the picker
@@ -471,9 +482,12 @@ class _EditProyekState extends State<EditProyek> {
                           itemBuilder: (context, index) {
                             if (index < global.listGambar.length) {
                               return HoverableImage(
-                                  imageUrl:
-                                      "https://biiio-studio.com:5868/getPhoto?path=" +
-                                          global.listGambar[index].path);
+                                imageUrl:
+                                    "https://biiio-studio.com:5868/getPhoto?path=" +
+                                        global.listGambar[index].path,
+                                idGambar: global.listGambar[index].id,
+                                onImageDeleted: refreshGrid,
+                              );
                             } else {
                               return Material(
                                 elevation: 4.0, // Optional shadow
