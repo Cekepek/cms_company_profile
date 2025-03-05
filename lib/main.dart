@@ -9,6 +9,7 @@ import 'package:cms_company_profile/login.dart';
 import 'package:cms_company_profile/portfolio.dart';
 import 'package:flutter/material.dart';
 import 'package:cms_company_profile/model/api.dart' as api;
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'global.dart' as global;
 
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: Login(),
+      builder: EasyLoading.init(),
     );
   }
 }
@@ -74,8 +76,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

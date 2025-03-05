@@ -8,6 +8,8 @@ import 'package:cms_company_profile/hoverableImage.dart';
 import 'package:cms_company_profile/sidebar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'global.dart' as global;
 import 'package:cms_company_profile/model/api.dart' as api;
 import 'package:http/http.dart' as http;
@@ -221,6 +223,16 @@ class _EditProyekState extends State<EditProyek> {
     }
   }
 
+  Future<Uint8List> compressImg(Uint8List list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      quality: 96,
+    );
+    print(list.length);
+    print(result.length);
+    return result;
+  }
+
   Future<void> _pickImage() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -228,23 +240,30 @@ class _EditProyekState extends State<EditProyek> {
         withData: true, // Get the file's byte data
         allowMultiple: true,
       );
-
+      await EasyLoading.show(
+          status: "Sedang mengupload foto",
+          maskType: EasyLoadingMaskType.black);
       if (result != null) {
-        setState(() {
-          for (var file in result.files) {
-            Uint8List fileBytes = file.bytes!;
-            uploadImage(fileBytes, file.name);
+        for (var file in result.files) {
+          Uint8List fileBytes = file.bytes!;
+          Uint8List? compressed = await compressImg(fileBytes);
+          setState(() {
+            uploadImage(compressed, file.name);
             print("File disimpan: ${file.name}");
-          }
-          // Uint8List fileBytes = result.files.single.bytes!;
-          // uploadImage(fileBytes, result.files.single.name);
-          // //  _imageBytes = result.files.first.bytes;
-          // print("KE SAVE " + result.files.first.name);
-        });
+          });
+        }
+        await EasyLoading.showSuccess(
+            "Berhasil mengupload foto, Silahkan menunggu hingga gambar muncul");
+        // Uint8List fileBytes = result.files.single.bytes!;
+        // uploadImage(fileBytes, result.files.single.name);
+        // //  _imageBytes = result.files.first.bytes;
+        // print("KE SAVE " + result.files.first.name);
       } else {
         // User canceled the picker
+        await EasyLoading.dismiss();
       }
     } catch (e) {
+      await EasyLoading.showError("Gagal mengupload foto");
       print("ERROR PICKING FILE : $e");
     }
   }
