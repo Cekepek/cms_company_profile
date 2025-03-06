@@ -8,6 +8,8 @@ import 'package:cms_company_profile/hoverableImage.dart';
 import 'package:cms_company_profile/sidebar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'global.dart' as global;
 import 'package:cms_company_profile/model/api.dart' as api;
 import 'package:http/http.dart' as http;
@@ -33,7 +35,7 @@ class _EditProyekState extends State<EditProyek> {
 
   Future<void> uploadImage(Uint8List imageFile, String filename) async {
     try {
-      String url = "http://biiio-studio.com:5868/portfolio";
+      String url = "https://biiio-studio.com:5868/portfolio";
       // Membuat request multipart
       var request = http.MultipartRequest('POST', Uri.parse(url));
 
@@ -75,6 +77,7 @@ class _EditProyekState extends State<EditProyek> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    global.listGambar = [];
     getData();
     nameController.text = global.proyekTerpilih.namaProject;
     lokasiController.text = global.proyekTerpilih.lokasi;
@@ -197,9 +200,13 @@ class _EditProyekState extends State<EditProyek> {
     );
   }
 
+  void refreshGrid() {
+    getData();
+  }
+
   void simpanEdit() async {
     final body = jsonEncode({
-      "id_proyek": global.proyekTerpilih.id,
+      "id": global.proyekTerpilih.id,
       "nama": nameController.text,
       "lokasi": lokasiController.text,
       "kategori": kategoriPilihan,
@@ -209,11 +216,21 @@ class _EditProyekState extends State<EditProyek> {
     if (response.status == 200) {
       print("KEUPLOAD ");
 
-      print(response.data['id_proyek']);
+      print(response.data['id']);
       showAlert();
     } else {
       throw Exception('Failed to read API');
     }
+  }
+
+  Future<Uint8List> compressImg(Uint8List list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      quality: 96,
+    );
+    print(list.length);
+    print(result.length);
+    return result;
   }
 
   Future<void> _pickImage() async {
@@ -221,19 +238,32 @@ class _EditProyekState extends State<EditProyek> {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.image, // Only allow image files
         withData: true, // Get the file's byte data
+        allowMultiple: true,
       );
-
+      await EasyLoading.show(
+          status: "Sedang mengupload foto",
+          maskType: EasyLoadingMaskType.black);
       if (result != null) {
-        setState(() {
-          Uint8List fileBytes = result.files.single.bytes!;
-          uploadImage(fileBytes, result.files.single.name);
-          //  _imageBytes = result.files.first.bytes;
-          print("KE SAVE " + result.files.first.name);
-        });
+        for (var file in result.files) {
+          Uint8List fileBytes = file.bytes!;
+          Uint8List? compressed = await compressImg(fileBytes);
+          setState(() {
+            uploadImage(compressed, file.name);
+            print("File disimpan: ${file.name}");
+          });
+        }
+        await EasyLoading.showSuccess(
+            "Berhasil mengupload foto, Silahkan menunggu hingga gambar muncul");
+        // Uint8List fileBytes = result.files.single.bytes!;
+        // uploadImage(fileBytes, result.files.single.name);
+        // //  _imageBytes = result.files.first.bytes;
+        // print("KE SAVE " + result.files.first.name);
       } else {
         // User canceled the picker
+        await EasyLoading.dismiss();
       }
     } catch (e) {
+      await EasyLoading.showError("Gagal mengupload foto");
       print("ERROR PICKING FILE : $e");
     }
   }
@@ -471,9 +501,12 @@ class _EditProyekState extends State<EditProyek> {
                           itemBuilder: (context, index) {
                             if (index < global.listGambar.length) {
                               return HoverableImage(
-                                  imageUrl:
-                                      "http://biiio-studio.com:5868/getPhoto?path=" +
-                                          global.listGambar[index].path);
+                                imageUrl:
+                                    "https://biiio-studio.com:5868/getPhoto?path=" +
+                                        global.listGambar[index].path,
+                                idGambar: global.listGambar[index].id,
+                                onImageDeleted: refreshGrid,
+                              );
                             } else {
                               return Material(
                                 elevation: 4.0, // Optional shadow
