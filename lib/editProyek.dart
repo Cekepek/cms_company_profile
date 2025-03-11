@@ -226,7 +226,7 @@ class _EditProyekState extends State<EditProyek> {
   Future<Uint8List> compressImg(Uint8List list) async {
     var result = await FlutterImageCompress.compressWithList(
       list,
-      quality: 96,
+      quality: 50,
     );
     print(list.length);
     print(result.length);
