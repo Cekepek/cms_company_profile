@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:cms_company_profile/class/api.dart';
 import 'package:http/http.dart' as http;
 
-String urlApi = "https://biiio-studio.com:5868";
+String urlApi = "https://biiiostudio.com:5868";
 
 Future<ResponseRequestApi> connectApi(
     String url, String method, dynamic body) async {
