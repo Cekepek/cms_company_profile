@@ -35,7 +35,7 @@ class _EditProyekState extends State<EditProyek> {
 
   Future<void> uploadImage(Uint8List imageFile, String filename) async {
     try {
-      String url = "https://biiio-studio.com:5868/portfolio";
+      String url = "https://biiiostudio.com:5868/portfolio";
       // Membuat request multipart
       var request = http.MultipartRequest('POST', Uri.parse(url));
 
@@ -502,7 +502,7 @@ class _EditProyekState extends State<EditProyek> {
                             if (index < global.listGambar.length) {
                               return HoverableImage(
                                 imageUrl:
-                                    "https://biiio-studio.com:5868/getPhoto?path=" +
+                                    "https://biiiostudio.com:5868/getPhoto?path=" +
                                         global.listGambar[index].path,
                                 idGambar: global.listGambar[index].id,
                                 onImageDeleted: refreshGrid,
